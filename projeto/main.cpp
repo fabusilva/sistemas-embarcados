@@ -1,12 +1,15 @@
 #include "mbed.h"
 
 #define BLINKING_RATE 50ms
+#define BOTTON_UP_FLAG (1UL << 0)
+#define BOTTON_DONW_FLAG (1UL << 1)
 
 BufferedSerial serial(PC_4, PA_10);
 // Pc_4 TX
 // PA_10 RX vermelho
 Timer timer;
 Thread threadButtonUp, threadButtonDown, threadRead, threadWrite;
+EventFlags flags;
 
 PwmOut ledA(PA_7);
 PwmOut ledB(PB_6);
@@ -35,7 +38,7 @@ char down = '-';
 bool bt_up_pressed = false;
 bool bt_down_pressed = false;
 
-int displayCounter = 0;
+int displayCounter = 5;
 float luminosityValue = 0.5f;
 
 void luminosity() {
@@ -179,8 +182,8 @@ void decreasing() {
   std::chrono::microseconds interrupt_time = timer.elapsed_time();
   int interrupt_time_int = static_cast<int>(interrupt_time.count());
   if (interrupt_time_int - last_interrupt_time > 200000) {
-    // enviandoCod(down);
     bt_down_pressed = true;
+    flags.set(BOTTON_DONW_FLAG);
   }
   last_interrupt_time = interrupt_time_int;
 }
@@ -190,8 +193,8 @@ void increasing() {
   std::chrono::microseconds interrupt_time = timer.elapsed_time();
   int interrupt_time_int = static_cast<int>(interrupt_time.count());
   if (interrupt_time_int - last_interrupt_time > 200000) {
-    // enviandoCod(up);
-    bt_up_pressed = true;
+    // bt_up_pressed = true;
+    flags.set(BOTTON_UP_FLAG);
   }
   last_interrupt_time = interrupt_time_int;
 }
@@ -224,21 +227,25 @@ void writing_msg_thread() {
 }
 
 void button_up_thread() {
+  uint32_t flags_read = 0;
   while (true) {
-    if (bt_up_pressed) {
-      sentCode(up);
-      bt_up_pressed = false;
-    }
+    flags_read = flags.wait_any(BOTTON_UP_FLAG);
+    // if (bt_up_pressed) {
+    sentCode(up);
+    // bt_up_pressed = false;
+    //}
     ThisThread::sleep_for(BLINKING_RATE);
   }
 }
 
 void button_donw_thread() {
+  uint32_t flags_read = 0;
   while (true) {
-    if (bt_down_pressed) {
-      sentCode(down);
-      bt_down_pressed = false;
-    }
+    flags_read = flags.wait_any(BOTTON_DONW_FLAG);
+    // if (bt_down_pressed) {
+    sentCode(down);
+    // bt_down_pressed = false;
+    //}
     ThisThread::sleep_for(BLINKING_RATE);
   }
 }
@@ -250,8 +257,8 @@ int main() {
 
   threadWrite.start(writing_msg_thread);
   threadRead.start(reading_msg_thread);
-  threadButtonUp.start(button_up_thread);
-  threadButtonDown.start(button_donw_thread);
+  threadButtonUp.start(mbed::callback(button_up_thread));
+  threadButtonDown.start(mbed::callback(button_donw_thread));
 
   btDown.fall(&decreasing);
   btUp.fall(&increasing);
