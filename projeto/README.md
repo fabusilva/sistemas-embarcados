@@ -1,10 +1,12 @@
 
 # Projeto de unidade
 
-Projeto avaliativo da I unidade, da diciplina de sistemas embarcados do curso ADS do IFPE *Campus* Garanhuns.
+Projeto avaliativo da I unidade da disciplina de Sistemas Embarcados do curso de Análise e Desenvolvimento de Sistemas (ADS) do IFPE *Campus* Garanhuns.
+
+O projeto tem como objetivo principal a aplicação dos conhecimentos adquiridos durante o estudo da disciplina de Sistemas Embarcados. Será realizado um projeto prático que envolve a utilização de dispositivos embarcados para solucionar um problema específico.
 ___
 >
-#### componentes eletrônico utilizado:
+#### Componentes eletrônico utilizado:
 
 - Placa De Desenvolvimento [Nucleo-f303re](https://os.mbed.com/platforms/ST-Nucleo-F303RE/)
 - Display de 7 segmentos
