@@ -21,8 +21,10 @@ const client = mqtt.connect(connectUrl, {
 
 const topic = 'Teste';
 const payload = {
-  temperatura: '29',
-  umidade: '85',
+  temperatura: '29.3',
+  umidade: '85.8',
+  pressao: '500',
+  altitude: '27'
 };
 
 client.on('connect', () => {
@@ -45,9 +47,11 @@ client.on('message', (topic, payload) => {
   const data = JSON.parse(payload.toString());
   console.log('Received Message:', topic, payload.toString());
   
-  // Imprimir a temperatura e umidade separadamente
+  // Imprimir separadamente
   console.log('Temperatura:', data.temperatura);
   console.log('Umidade:', data.umidade);
+  console.log('Pressão:', data.pressao);
+  console.log('Altitude:', data.altitude);
 });
 
   
