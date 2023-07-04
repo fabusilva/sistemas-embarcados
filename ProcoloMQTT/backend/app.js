@@ -23,27 +23,19 @@ app.post('/publish', (req, res) => {
     });
   });
 
-app.get('/received', (req, res) => {
-  client.subscribe(topic, (error) => {
-    if (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Erro ao se inscrever no tópico' });
-    } else {
-      console.log('Inscrito no tópico:', topic);
-      res.json({ message: 'Inscrito no tópico' });
-    }
+  app.get('/received', (req, res) => {
+    client.subscribe([topic], () => {
+        console.log(`Subscribe to topic '${topic}'`);
+        client.on('message', (topic, RegistrosDoClima) => {
+          const data = JSON.parse(RegistrosDoClima.toString());
+          console.log('Received Message:', topic, RegistrosDoClima.toString());
+          res.json(data);
+        });
+      });
   });
-});
+  
 
-client.on('message', (receivedTopic, receivedMessage) => {
-  if (receivedTopic === topic) {
-    console.log('Mensagem Recebida:', receivedMessage.toString());
-    // Faça o que desejar com a mensagem recebida
-    const response = receivedMessage.toString();
-    res.json(response);
 
-  }
-});
 const port = 3000;
 app.listen(port, () => {
   console.log(`API rodando em http://localhost:${port}`);

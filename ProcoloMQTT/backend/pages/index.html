@@ -124,7 +124,18 @@
         console.error("Erro:", error);
         // Trate o erro, se necessário
       });
+
     
+      fetch("http://localhost:3000/received")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          // Faça algo com os dados recebidos
+        })
+        .catch((error) => {
+          console.error("Erro:", error);
+          // Trate o erro, se necessário
+        });
     
   }
 </script>
