@@ -20,23 +20,34 @@ const client = mqtt.connect(connectUrl, {
 });
 
 const topic = 'Teste';
-const payload = 'Testando 1,2,3... Testando'
+const payload = {
+  temperatura: '29',
+  umidade: '85',
+};
 
 client.on('connect', () => {
   console.log('Conectado!');
 
   client.subscribe([topic], () => {
-    console.log(`Subscribe to topic '${topic}'`)
-    client.publish(topic, payload, { qos: 0, retain: false }, (error) => {
+    console.log(`Subscribe to topic '${topic}'`);
+
+    client.publish(topic, JSON.stringify(payload), { qos: 0, retain: false }, (error) => {
       if (error) {
-        console.error(error)
+        console.error(error);
       }
-    })
-  })
+    });
+
+  });
+
 })
 
 client.on('message', (topic, payload) => {
-  console.log('Received Message:', topic, payload.toString())
-})
+  const data = JSON.parse(payload.toString());
+  console.log('Received Message:', topic, payload.toString());
+  
+  // Imprimir a temperatura e umidade separadamente
+  console.log('Temperatura:', data.temperatura);
+  console.log('Umidade:', data.umidade);
+});
 
   
