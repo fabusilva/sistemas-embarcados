@@ -25,13 +25,25 @@ app.post('/publish', (req, res) => {
 
   app.get('/received', (req, res) => {
     client.subscribe([topic], () => {
-        console.log(`Subscribe to topic '${topic}'`);
-        client.on('message', (topic, RegistrosDoClima) => {
-          const data = JSON.parse(RegistrosDoClima.toString());
-          console.log('Received Message:', topic, RegistrosDoClima.toString());
-          res.json(data);
-        });
-      });
+      console.log(`Subscribe to topic '${topic}'`);
+    });
+  
+    let receivedData = null;
+  
+    client.on('message', (topic, RegistrosDoClima) => {
+      const data = JSON.parse(RegistrosDoClima.toString());
+      console.log('Received Message:', topic, RegistrosDoClima.toString());
+      receivedData = data;
+    });
+  
+    // Aguarda um determinado período de tempo antes de enviar a resposta
+    setTimeout(() => {
+      if (receivedData) {
+        res.json(receivedData);
+      } else {
+        res.status(404).json({ error: 'Nenhum dado recebido' });
+      }
+    }, 1000); // Aguarda 1 segundo (ajuste conforme necessário)
   });
   
 
