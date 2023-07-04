@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Enviando dados para o broker</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #000;
+        color: #fff;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #333;
+        border-radius: 10px;
+        padding: 20px;
+      }
+
+      .container h1 {
+        text-align: center;
+        color: #69c9d0;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        padding-right: 10px;
+      }
+
+      .form-group label {
+        display: block;
+        color: #69c9d0;
+        margin-bottom: 5px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background-color: #000;
+        color: #fff;
+        border-radius: 5px;
+      }
+
+      .submit-button {
+        background-color: #69c9d0;
+        color: #000;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .submit-button:hover {
+        background-color: #fff;
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Enviando dados para o broker</h1>
+      <form>
+        <div class="form-group">
+          <label for="name">Temperatura:</label>
+          <input type="text" id="temperatura" name="temperatura" required />
+        </div>
+
+        <div class="form-group">
+          <label for="profession">Umidade:</label>
+          <input type="text" id="umidade" name="umidade" required />
+        </div>
+
+        <div class="form-group">
+          <label for="profession">Pressão:</label>
+          <input type="text" id="pressao" name="pressao" required />
+        </div>
+
+        <div class="form-group">
+          <label for="profession">Altitude:</label>
+          <input type="text" id="altitude" name="altitude" required />
+        </div>
+        <button
+          class="submit-button"
+          type="button"
+          onclick="cadastrarDados()"
+        >
+          Cadastrar
+        </button>
+      </form>
+    </div>
+  </body>
+</html>
+
+<script>
+  function cadastrarDados() {
+    // Obtenha os valores dos campos de entrada
+    var temperatura = document.getElementById("temperatura").value;
+    var umidade = document.getElementById("umidade").value;
+    var pressao = document.getElementById("pressao").value;
+    var altitude = document.getElementById("altitude").value;
+    console.log(temperatura,umidade,pressao,altitude);
+
+    const RegistrosDoClima = {
+      temperatura: temperatura,
+      umidade: umidade,
+      pressao: pressao,
+      altitude: altitude,
+    };
+    fetch("http://localhost:3000/publish", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(RegistrosDoClima),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        // Faça algo com a resposta do servidor, se necessário
+      })
+      .catch((error) => {
+        console.error("Erro:", error);
+        // Trate o erro, se necessário
+      });
+    
+    
+  }
+</script>
