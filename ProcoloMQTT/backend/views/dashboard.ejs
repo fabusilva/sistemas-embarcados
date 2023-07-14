@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .data {
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+      }
+
+      .data p {
+        margin: 0;
+        padding: 5px 0;
+      }
+
+      .data p:first-child {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="data" id="dataContainer">
+        <p id="temperature"></p>
+        <p id="humidity"></p>
+        <p id="pressure"></p>
+        <p id="altitude"></p>
+      </div>
+    </div>
+
+    <script>
+      function updateData(data) {
+        document.getElementById("temperature").textContent =
+          "Temperature: " + data.temperatura + "°C";
+        document.getElementById("humidity").textContent =
+          "Humidity: " + data.umidade + "%";
+        document.getElementById("pressure").textContent =
+          "Pressure: " + data.pressao + " hPa";
+        document.getElementById("altitude").textContent =
+          "Altitude: " + data.altitude + " m";
+      }
+
+      setInterval(() => {
+        fetch("http://localhost:3000/received")
+          .then((response) => response.json())
+          .then((data) => {
+            if (!(isNaN(data.temperatura))) {
+              console.log("A variável é um número");
+              updateData(data);
+            }
+            console.log(data);
+          })
+          .catch((error) => {
+            console.error("Erro:", error);
+            // Trate o erro, se necessário
+          });
+      }, 1000);
+    </script>
+  </body>
+</html>

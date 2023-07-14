@@ -19,12 +19,12 @@ const client = mqtt.connect(connectUrl, {
   ca: fs.readFileSync('./emqxsl-ca.crt'),
 });
 
-const topic = 'Teste';
+const topic = 'Dashboard';
 const RegistrosDoClima = {
-  temperatura: '29.3',
-  umidade: '85.8',
-  pressao: '500',
-  altitude: '27'
+  temperatura: '29',
+  umidade: '40',
+  pressao: '200',
+  altitude: '25'
 };
 
 client.on('connect', () => {
